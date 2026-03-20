@@ -1,0 +1,39 @@
+import math
+
+# Encoding
+encode = {
+    "Peak": 1, "OffPeak": 0,
+    "Rainy": 1, "Clear": 0,
+    "High": 2, "Medium": 1, "Low": 0,
+    "Yes": 1, "No": 0
+}
+
+data = [
+    ["Peak", "Rainy", "High", "Yes"],
+    ["Peak", "Clear", "High", "Yes"],
+    ["OffPeak", "Clear", "Low", "No"],
+    ["OffPeak", "Rainy", "Medium", "No"]
+]
+
+# Convert to numeric
+num_data = [[encode[val] for val in row] for row in data]
+
+def distance(a, b):
+    return math.sqrt(sum((a[i] - b[i])**2 for i in range(len(a))))
+
+def knn(test, k=3):
+    distances = []
+    for row in num_data:
+        d = distance(test, row[:-1])
+        distances.append((d, row[-1]))
+    
+    distances.sort()
+    neighbors = distances[:k]
+    
+    votes = sum(n[1] for n in neighbors)
+    return 1 if votes >= 2 else 0
+
+test = [1, 1, 2]  # Peak, Rainy, High
+result = knn(test)
+
+print("Prediction:", "Yes" if result == 1 else "No")
